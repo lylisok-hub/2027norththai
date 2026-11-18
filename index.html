@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>泰北行・團員版</title><meta name="color-scheme" content="light">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<style>
+:root{--bg:#FFFCF6;--ink:#4A3A2C;--ln:#B9A183;--c1:#F0E6D6;--c2:#E6D9BF;--c3:#F0E6D6;--c4:#E6D9BF;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/1.7 "Huninn","PingFang TC","Microsoft JhengHei",sans-serif}
+main{max-width:720px;margin:auto;padding:16px}h1{font-size:clamp(30px,8vw,40px);line-height:1.3;font-weight:400;margin:8px 0}h2{font-size:28px;font-weight:400;margin:0 0 6px}
+.btn{display:flex;align-items:center;justify-content:center;min-height:54px;padding:6px 16px;border:1.5px solid var(--ln);border-radius:18px;background:var(--bg);color:var(--ink);font:inherit;text-decoration:none;cursor:pointer;text-align:center;line-height:1.4}
+.p{background:var(--c1)}.y{background:var(--c2)}.b{background:var(--c3)}.g{background:var(--c4)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dayb{min-height:100px;flex-direction:column}.dayb b{font-weight:400;font-size:26px}
+.card{border:1.5px solid var(--ln);border-radius:22px;padding:16px;margin:14px 0;background:var(--bg)}.note{background:var(--c2)}
+.tm{color:#8a6a4a}.nm{font-size:25px;line-height:1.4;margin:2px 0}.mu{font-size:18px;color:#6f5d4d}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.row .btn{flex:none;min-width:0;min-height:40px;padding:2px 14px;font-size:16px;border-radius:14px}.col{display:grid;gap:10px;margin-top:8px}
+.nav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0}ul{padding-left:24px;margin:6px 0}li{margin:6px 0}
+#dr{position:fixed;inset:0;background:var(--c2);z-index:50;display:none;flex-direction:column;justify-content:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 20px) 20px calc(env(safe-area-inset-bottom,0px) + 20px);text-align:center;overflow:auto}
+#dr .en{font-size:clamp(30px,9vw,46px);line-height:1.25}#dr .th{font-size:clamp(34px,10vw,52px);line-height:1.4}
+</style></head><body><main id="app"></main><div id="dr"></div>
+<script>
+/* ===== 修改處：電話填在下面（留空就不會顯示）。行程格式：[時間, 停留, 中文名, 英文名（地圖與給司機看用）, 泰文名] ===== */
+const TEL=[['聯絡人',''],['司機',''],['保險公司','']];
+const NH='BED Phrasingh',NV='Novotel Chiangmai Nimman Journeyhub';
+const DAYS=[
+{d:'4/10（六）',t:'出發・抵達清邁',h:NH,s:[['13:20','','JX751 桃園機場第二航廈起飛'],['16:30','約 1–1.5 小時（入境、領行李）','清邁機場','Chiang Mai International Airport','สนามบินเชียงใหม่'],['約 18:00','約 30 分鐘','換匯店'],['約 19:30','約 1–1.5 小時（看體力）','週六夜市','Saturday Night Market Chiang Mai','ถนนคนเดินวัวลาย']],m:[['午餐','機上'],['晚餐','Chang Phueak Pork Leg Rice 或 Suki Changphuak','豬腳飯；乾炒壽喜燒（素）']],n:['下午才落地，夜市看體力再決定去不去。']},
+{d:'4/11（日）',t:'茵他儂國家公園',h:NH,s:[['','約 2–2.5 小時','Kew Mae Pan 步道','Kew Mae Pan Nature Trail, Doi Inthanon','กิ่วแม่ปาน'],['','30–40 分鐘','Wachirathan 瀑布','Wachirathan Waterfall','น้ำตกวชิรธาร'],['','約 1 小時','雙塔','Royal Pagodas, Doi Inthanon'],['約 20:00','約 1 小時','週日夜市','Sunday Walking Street Chiang Mai','ถนนคนเดินท่าแพ'],['約 21:00','約 1 小時','足底按摩']],m:[['午餐','公園內'],['咖啡','Akha Ama Phrasingh'],['晚餐','CHUM Northern Kitchen','北泰料理']],n:['山上比較涼，請帶薄外套。','步道依現場規定與體力，累了就休息。']},
+{d:'4/12（一）',t:'巨樹咖啡・湄康蓬・古城',h:NH,s:[['約 09:30','1–1.5 小時','巨樹咖啡','The Giant Chiangmai'],['約 11:15','約 1.5 小時','湄康蓬村','Mae Kampong Village','แม่กำปอง'],['約 15:00','20–30 分鐘','塔佩門','Tha Phae Gate Chiang Mai','ประตูท่าแพ'],['約 15:40','40–60 分鐘','柴迪龍寺','Wat Chedi Luang','วัดเจดีย์หลวง'],['約 16:40','20–30 分鐘','盼道寺','Wat Phan Tao','วัดพันเตา']],m:[['午餐','Chomna Cafe Chiang Mai'],['晚餐','Neng Roasted Pork','烤脆皮豬肉']],n:['進寺廟請穿著端莊，避免露肩、短褲。','明天開始潑水節，古城可能已有人潮。']},
+{d:'4/13（二）',t:'潑水節・清萊白廟藍廟',h:'Le Patta Resort & Hotel Chiang Rai',s:[['約 08:00','車程，中途休息','前往清萊'],['約 10:00','約 1 小時','Dantewada 網紅咖啡','Dantewada Land of Angels Waterfall Park'],['約 11:30','1.5–2 小時','白廟','Wat Rong Khun','วัดร่องขุ่น'],['約 14:45','30–45 分鐘','藍廟','Wat Rong Suea Ten','วัดร่องเสือเต้น']],m:[['咖啡','Dantewada Land of Angels Waterfall Park'],['午餐','Barrab restaurant Chiang Rai','清萊特色料理'],['晚餐','Khao Tom Jor Charoenchai 或 清萊夜市小陶鍋','三選一']],n:['潑水節：車窗全關，手機和證件放防水袋。','今晚住在清萊，行李只帶一晚的小包。']},
+{d:'4/14（三）',t:'Doi Chang 咖啡村・回清邁',h:NV,s:[['約 10:00','2–2.5 小時（咖啡、午餐）','Doi Chang 象山咖啡村','Doi Chaang Coffee Estate','ดอยช้าง'],['約 12:30','車程約 3.5–4 小時','返回清邁']],m:[['咖啡','MiYo coffee & bar 或 Doi Chaang Coffee Estate'],['午餐','Akha Kitchen Doi Chang','阿卡族料理'],['晚餐','KubKao’ KubPla','泰國連鎖餐廳']],n:['山路彎多，容易暈車請先吃藥。','潑水節期間可能塞車，時間會彈性調整。']},
+{d:'4/15（四）',t:'帕丘峽谷・美旺竹筏',h:NV,s:[['約 10:30','1–1.5 小時','帕丘峽谷','Pha Chor Mae Wang','ผาช่อ'],['約 14:00','1–1.5 小時（視水位）','美旺竹筏','Mae Wang bamboo rafting','แม่วาง'],['約 18:00','1–1.5 小時','尼曼 Maya 百貨周邊','MAYA Lifestyle Shopping Center Chiang Mai'],['約 20:00','1.5–2 小時','泰式／全身按摩']],m:[['午餐','Mae Wang Mountain View'],['晚餐','Tong Tem Toh','ต๋องเต็มโต๊ะ']],n:['請多帶一套乾淨衣物和涼鞋／拖鞋。','竹筏能不能玩要看水位，若不行會另行調整。']},
+{d:'4/16（五）',t:'市場・寺廟・雙龍寺',h:NV,s:[['約 09:00','1–1.5 小時','瓦洛落市場','Warorot Market','ตลาดวโรรส'],['約 11:00','約 1 小時','帕拉寺','Wat Pha Lat','วัดผาลาด'],['約 14:00','1.5–2 小時','雙龍寺','Wat Phra That Doi Suthep','วัดพระธาตุดอยสุเทพ'],['約 16:45','1–1.5 小時','Big C 或 Lotus’s 量販店']],m:[['咖啡','Cake BaanPiemsuk','椰子派'],['午餐','Dan Chicken Rice 或 Kanomjeen Sanpakoi','海南雞飯；泰式米線'],['晚餐','Ginger Farm Kitchen']],n:['雙龍寺階梯多，可搭纜車或電梯，量力而為。','這天可以買伴手禮。']},
+{d:'4/17（六）',t:'真心市集・悟孟寺・賦歸',h:'',s:[['約 08:15','1.5–2 小時','真心市集','Jing Jai Market Chiang Mai','ตลาดจริงใจ'],['約 10:15','1–1.5 小時','悟孟寺','Wat Umong','วัดอุโมงค์'],['14:00','車程約 30 分鐘','前往機場','Chiang Mai International Airport','สนามบินเชียงใหม่'],['17:20','','班機賦歸']],m:[['午餐','Ohkajhu Nim City 或 ทับปิง By อันจะกิน']],n:['今天退房，行李全程放在車上。','護照、機票隨身帶好。']}];
+/* ===== 以下為程式 ===== */
+const $=s=>document.querySelector(s),COL=['p','y','b','g'],CARDS=[];
+const mq=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q+' Thailand');
+const noMap=['機上','公園內'];
+function drv(zh,en,th){CARDS.push([zh,en,th||'']);return `<button class="btn y" onclick="showCard(${CARDS.length-1})">給司機看</button>`}
+function showCard(i){const c=CARDS[i];$('#dr').innerHTML=`<div>請帶我到這裡<br>Please take me here</div><div class="en"><b>${c[1]}</b></div>${c[2]?`<div class="th">${c[2]}</div>`:''}<div class="th" style="font-size:26px">ช่วยพาไปที่นี่ด้วยครับ/ค่ะ</div><button class="btn" onclick="hideCard()" style="margin-top:14px">關閉</button>`;$('#dr').style.display='flex'}
+function hideCard(){$('#dr').style.display='none'}
+const link=(q,l)=>`<a class="btn b" target="_blank" rel="noopener" href="${mq(q)}">${l||'地圖導航'}</a>`;
+function home(){return `<h1>資深高級大人們的泰北行</h1><p class="mu">2027/4/10 – 4/17　8 天 7 夜</p><p>點下面的日期，就能看當天行程。</p><div class="grid">`+DAYS.map((D,i)=>`<a class="btn dayb ${COL[i%4]}" href="#day${i+1}"><b>第 ${i+1} 天</b>${D.d}<br>${D.t}</a>`).join('')+`</div>`+(TEL.some(x=>x[1])?`<div class="card"><h2>緊急聯絡</h2><div class="col">`+TEL.filter(x=>x[1]).map(x=>`<a class="btn g" href="tel:${x[1]}">📞 ${x[0]}　${x[1]}</a>`).join('')+`</div></div>`:'')+`<div class="card note" style="background:#D6E2E8"><h2>出發前提醒</h2><ul><li>4/13–4/15 潑水節：手機、證件放防水袋。</li><li>山路彎多，容易暈車請先吃藥。</li><li>進寺廟請穿著端莊，避免露肩、短褲。</li><li>看不懂地名，就按「給司機看」。</li></ul></div>`}
+function day(n){CARDS.length=0;const D=DAYS[n-1],c=COL[(n-1)%4];
+let h=`<a class="btn" href="#home">← 回目錄</a><div class="card ${c}" style="background:var(--${({p:'c1',y:'c2',b:'c3',g:'c4'})[c]})"><h2>第 ${n} 天　${D.d}</h2><div class="nm">${D.t}</div></div>`;
+h+=D.s.map(s=>`<div class="card"><div><b class="tm">${s[0]}</b>${s[0]&&s[1]?'　':''}<span class="mu">${s[1]}</span></div><div class="nm">${s[2]}</div>${s[3]?`<div class="mu">${s[3]}</div><div class="row">${link(s[3])}${drv(s[2],s[3],s[4])}</div>`:''}</div>`).join('');
+h+=`<div class="card"><h2>用餐</h2>`+D.m.map(m=>`<div style="margin-top:12px"><b>${m[0]}</b>${m[2]?`<span class="mu">　${m[2]}</span>`:''}`+(noMap.includes(m[1])?`<div class="nm">${m[1]}</div>`:`<div class="col">`+m[1].split(' 或 ').map(x=>link(x,x)).join('')+`</div>`)+`</div>`).join('')+`</div>`;
+h+=D.h?`<div class="card"><h2>今晚住宿</h2><div class="nm">${D.h}</div><div class="row">${link(D.h)}${drv('住宿',D.h)}</div></div>`:'';
+h+=`<div class="card note"><h2>今天注意</h2><ul>${D.n.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+h+=`<div class="nav">${n>1?`<a class="btn" href="#day${n-1}">← 前一天</a>`:'<span></span>'}<a class="btn y" href="#home">目錄</a>${n<8?`<a class="btn" href="#day${n+1}">後一天 →</a>`:'<span></span>'}</div>`;return h}
+function go(){hideCard();const m=location.hash.match(/^#day([1-8])$/);$('#app').innerHTML=m?day(+m[1]):home();scrollTo(0,0)}
+addEventListener('hashchange',go);go();
+</script></body></html>
